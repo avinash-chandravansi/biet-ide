@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" language="javascript">
+      function toggleVisibility(cb) {
+        var x = document.getElementById("ipp");
+        if (cb.checked == false) x.style.visibility = "hidden";
+        // or x.style.display = "none";
+        else x.style.visibility = "visible"; //or x.style.display = "block";
+      }
+    </script>
+
+    <style type="text/css" media="screen">
+      #editor {
+        background-color: #1e1e30;
+
+        font-size: 15px;
+        overflow: scroll;
+      }
+    </style>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Recursive:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      function clicks() {
+        var testcases = {
+          input: ["4 \n1 2 3 4]", "5 \n1 1 1 1 1", "5 \n3 1 2 10 1 "],
+          output: ["1 3 6 10 ", "1 2 3 4 5 ", "3 4 6 16 17 "],
+        };
+
+        var inputt = document.querySelector("#ipp").value;
+
+        for (var i = 0; i <= 2; i++) {
+          var to_compile = {
+            LanguageChoice: "7",
+            Program: editor.getValue(),
+            Input: testcases.input[i],
+            CompilerArgs: "-Wall -std=c++14 -O2 -o a.out source_file.cpp",
+          };
+          setTimeout("", 4000);
+          $.ajax({
+            url: "https://rextester.com/rundotnet/api",
+            type: "POST",
+            data: to_compile,
+            async: false,
+          })
+            .done(function (data) {
+              if (data.Result == testcases.output[i]) {
+                var j = i + 1;
+                document.getElementById("t" + parseInt(j)).style.color =
+                  "green";
+                document.getElementById("t" + parseInt(j)).innerHTML =
+                  "Test Case " + j + " \n Passed";
+                if (i == 2) {
+                  alert("Shabbashhhhh!!!!!!");
+                }
+              } else if (data.Result == null && i == 2) {
+                alert(
+                  "Error occoured in your program : \n" +
+                    JSON.stringify(data.Errors)
+                );
+                for (var k = 0; k <= 2; k++) {
+                  var j = i + 1;
+                  document.getElementById("t" + parseInt(j)).style.color =
+                    "red";
+                  document.getElementById("t" + parseInt(j)).innerHTML =
+                    "Test Case " + j + "  \n Failed";
+                }
+              } else {
+                var j = i + 1;
+                document.getElementById("t" + parseInt(j)).style.color = "red";
+                document.getElementById("t" + parseInt(j)).innerHTML =
+                  "Test Case " + j + "  \n Failed";
+              }
+            })
+            .fail(function (data, err) {
+              alert(
+                "Error occoured :  " +
+                  JSON.stringify(data) +
+                  " " +
+                  JSON.stringify(err)
+              );
+            });
+        }
+      }
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Recursive:wght@700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body style="background-color: #1e1e30;">
+    <h1
+      style="
+        display: inline-block;
+        margin: 20px;
+        color: red;
+        font-style: italic;
+        font-weight: bolder;
+        text-shadow: 0px 0px 6px black;
+      "
+    >
+      TEMPARORY IDE
+    </h1>
+    <select style="float: right; margin: 20px; margin-bottom: 0px;">
+      <option>C++</option>
+      <option>C</option>
+      <option>Python</option>
+      <option>Js</option>
+      <option>Java</option>
+    </select>
+    <div
+      style="
+        box-shadow: 0px 0px 7px 5px black;
+        border-radius: 20px;
+        border: 2px solid black;
+        overflow: hidden;
+        display: flex;
+        height: 100%;
+      "
+    >
+      <div
+        style="
+          background-color: #1e1e30;
+          overflow: auto;
+          color: white;
+          padding: 20px;
+          display: inline-block;
+          min-height: 720%;
+          width: 50%;
+        "
+      >
+        <pre>	
+<h1>1480. Running Sum of 1d Array</h1>
+
+Easy
+
+Given an array nums. We define a running sum of an array as runningSum[i] = sum(nums[0]…nums[i]).
+
+Return the running sum of nums.
+
+ 
+
+<h2>Example 1:</h2>
+Input: nums = [1,2,3,4]
+Output: [1,3,6,10]
+Explanation: Running sum is obtained as follows: [1, 1+2, 1+2+3, 1+2+3+4].
+
+<h2>Example 2:</h2>
+Input: nums = [1,1,1,1,1]
+Output: [1,2,3,4,5]
+Explanation: Running sum is obtained as follows: [1, 1+1, 1+1+1, 1+1+1+1, 1+1+1+1+1].
+
+<h2>Example 3:</h2>
+Input: nums = [3,1,2,10,1]
+Output: [3,4,6,16,17]
+
+<h2>Constraints:</h2>
+    1 <= nums.length <= 1000
+    -10^6 <= nums[i] <= 10^6
+
+<h2>Accepted</h2>
+74,957
+
+<h2>Submissions</h2>
+82,642
+
+Seen this question in a real interview before?
+</pre>
+      </div>
+      <div
+        style="
+          background-color: black;
+          border: 2px solid black;
+
+          display: inline-block;
+          min-height: 720px;
+          width: 50%;
+        "
+      >
+        <div id="editor" style="height: 100%; width: 100%;"></div>
+        <script
+          src="https://pagecdn.io/lib/ace/1.4.12/ace.js"
+          crossorigin="anonymous"
+          integrity="sha256-Q9hnBpgBFstzZOr+OKFOWZWfcF5nFXO8Qz48Nmndo6U="
+        ></script>
+        <script
+          src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js"
+          crossorigin="anonymous"
+          integrity="sha256-T5QdmsCQO5z8tBAXMrCZ4f3RX8wVdiA0Fu17FGnU1vU="
+        ></script>
+        <script
+          src="https://pagecdn.io/lib/ace/1.4.12/worker-xquery.min.js"
+          crossorigin="anonymous"
+        ></script>
+
+        <script
+          src="https://pagecdn.io/lib/ace/1.4.12/snippets/c_cpp.js"
+          crossorigin="anonymous"
+        ></script>
+        <script
+          src="https://pagecdn.io/lib/ace/1.4.12/theme-nord_dark.js"
+          crossorigin="anonymous"
+        ></script>
+        <script>
+          var editor = ace.edit("editor");
+          editor.setTheme("ace/theme/nord_dark");
+          editor.session.setMode("ace/mode/c_cpp");
+        </script>
+      </div>
+    </div>
+    <input
+      type="submit"
+      name=""
+      value="submit code "
+      style="
+        float: right;
+        margin: 20px;
+        margin-right: 40px;
+        border-radius: 20px;
+        transform: scale(1.5);
+      "
+      onclick="clicks()"
+    />
+    <div
+      style="
+        overflow: auto;
+        width: 85%;
+        border-radius: 20px;
+        margin: 20px;
+        padding: 20px;
+        height: 50px;
+      "
+    >
+      <h4 style="float: left; color: white;">
+        custom input
+        <input
+          id="uncheck"
+          type="checkbox"
+          name=""
+          onClick="toggleVisibility(this)"
+        />
+      </h4>
+      <h4 id="out" style="color: #28a745;">
+        <textarea
+          id="ipp"
+          style="height: 200px; width: 400px; visibility: hidden;"
+        ></textarea>
+      </h4>
+
+      <!--     <center style="color: blanchedalmond;">
+        <h4 style="float: left;">
+          custom input <input type="checkbox" name="">
+        </h4>
+        <h4 id="out" style="color: #28a745;">
+ 			<textarea rows="4" cols=""></textarea>	        
+        </h4>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <h4 style="float: left;">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Testcase
+          Result:
+        </h4>
+        <h4 id="testcase" style="float: left;">
+          ---------&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </h4>
+      </center> -->
+    </div>
+    <div
+      style="
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.5em;
+        box-shadow: 0px 0px 2px 4px black;
+        margin: 20px;
+        display: inline-block;
+        padding: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+        font-weight: bolder;
+      "
+    >
+      <p id="t1" style="color: green; word-spacing: 10px;">TEST CASE 1<br /></p>
+    </div>
+    <div
+      style="
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.5em;
+        box-shadow: 0px 0px 2px 4px black;
+        margin: 20px;
+        display: inline-block;
+        padding: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+        font-weight: bolder;
+      "
+    >
+      <p id="t2" style="color: green; word-spacing: 10px;">TEST CASE 2<br /></p>
+    </div>
+    <div
+      style="
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.5em;
+        box-shadow: 0px 0px 2px 4px black;
+        margin: 20px;
+        display: inline-block;
+        padding: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+        font-weight: bolder;
+      "
+    >
+      <p id="t3" style="color: green; word-spacing: 10px;">TEST CASE 3<br /></p>
+    </div>
+  </body>
+</html>

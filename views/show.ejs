@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <title>BIET codeground</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      function triggers() {
+        $("#load").hide();
+      }
+    </script>
+    <style>
+      .list-group-item {
+        display: contents;
+      }
+    </style>
+    <style type="text/css" media="screen">
+      #editor {
+        background-color: #1e1e30;
+
+        font-size: 15px;
+        overflow: scroll;
+      }
+    </style>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Recursive:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      function clicks() {
+        var tsdiv = document.getElementById("testcase_head");
+        tsdiv.style = "display:flex";
+
+      
+        var incoming = JSON.parse(document.getElementById('data_recieved').innerText);
+       
+        var testcasefilter1 = incoming.testcase1;
+        var testcasefilter2 = incoming.testcase2;
+        var testcasefilter3 = incoming.testcase3;
+        var testcasefilterout1 = incoming.testcase1ans;
+        var testcasefilterout2 = incoming.testcase2ans;
+        var testcasefilterout3 = incoming.testcase3ans;
+       
+       
+        var testcases = {
+          input: [testcasefilter1.replace('\\n','\n'),testcasefilter2.replace('\\n','\n'),testcasefilter3.replace('\\n','\n')],
+          output: [testcasefilterout1.replace('\\n','\n'),testcasefilterout2.replace('\\n','\n'), testcasefilterout3.replace('\\n','\n')],
+        };
+
+        for (var i = 0; i <= 2; i++) {
+          var pk = i + 1;
+          document.getElementById("dt" + parseInt(pk)).style = "display:none";
+          document.getElementById("dtf" + parseInt(pk)).style =
+            "display : none";
+          var to_compile = {
+            LanguageChoice: "7",
+            Program: editor.getValue(),
+
+            Input: testcases.input[i],
+            CompilerArgs: "-Wall -std=c++14 -O2 -o a.out source_file.cpp",
+          };
+
+          $.ajax({
+            url: "https://rextester.com/rundotnet/api",
+            type: "POST",
+            data: to_compile,
+            async: false,
+            beforeSend: () => {
+              $("#load_div").toggle();
+
+              $(".container").hide();
+              $("#load").show();
+              document.getElementById("indexing").style = "display:flex";
+              $("body").css("background-color", "#1f212c");
+
+              setTimeout("", 3000);
+            },
+            complete: () => {
+              $(".container").show();
+              $("#load").hide();
+
+              $("#load_div").toggle();
+            },
+          })
+            .done(function (data) {
+            
+
+              if(i==2)
+              {
+                document.getElementById("output_div").style.visibility =
+                  "visible";
+                document.getElementById("sample_ipp").innerHTML =
+                  testcases.input[2];
+  
+                document.getElementById("sample_op").innerHTML =
+                  testcases.output[2];
+
+
+              }
+                  if(!data.Result) data.Result= data.Errors
+
+              if (data.Result == testcases.output[i] || data.Result.trim()== testcases.output[i].trim()) {
+                var j = i + 1;
+                if (j == 2) window.location.hash = "#here";
+
+                document.getElementById("dt" + parseInt(j)).style =
+                  "display:flex;color: rgb(0, 255, 25);background-color: rgba(0, 255, 25, 0.25);margin: 10px 5px;border-radius: 5px";
+
+                if (i == 2) {
+                  document.getElementById("user_out").innerHTML = data.Result;
+                }
+              } else if (data.Result == null) {
+                document.getElementById("output_div").style.visibility =
+                  "visible";
+                document.getElementById("sample_ipp").innerHTML =
+                  testcases.input[2];
+
+                document.getElementById("sample_op").innerHTML =
+                  testcases.output[2];
+                if (i == 2) {
+                  document.getElementById("user_out").innerHTML = data.Errors;
+                }
+
+                for (var k = 0; k <= 2; k++) {
+                  var j = i + 1;
+
+                  window.location.hash = "#here";
+
+                  document.getElementById(
+                    "dtf" + parseInt(j)
+                  ).style.visibility = "visible";
+                  document.getElementById("dtf" + parseInt(pk)).style =
+                    "display : flex;color: rgb(255, 0, 7); background-color: rgb(87, 23, 36) ; margin: 10px 5px;border-radius: 5px";
+                }
+              } else {
+                var j = i + 1;
+                window.location.hash = "here";
+                document.getElementById("dtf" + parseInt(j)).style.visibility =
+                  "visible";
+                document.getElementById("dtf" + parseInt(j)).style =
+                  "display : flex;color: rgb(255, 0, 7); background-color: rgb(87, 23, 36) ; margin: 10px 5px;border-radius: 5px";
+
+                if (i == 2)
+                  document.getElementById("user_out").innerHTML = data.Result;
+              }
+              
+            })
+            .fail(function (data, err) {
+              alert(
+                "Error occoured :  " +
+                  JSON.stringify(data) +
+                  " " +
+                  JSON.stringify(err)
+              );
+            });
+        }
+      }
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed:300,400,500,600,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Secular+One"
+    />
+    <link rel="stylesheet" href="styles.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css"
+    />
+  </head>
+
+  <body
+    onload="triggers()"
+    style="
+      background-color: #161625;
+      font-weight: 300;
+      font-family: 'Secular One', sans-serif;
+      color: #007bff;
+      height: 400px;
+    "
+  >
+    
+    <center>
+      <div
+        id="indexing"
+        style="width: auto; height: 100%; display: none; margin: 0px auto;"
+      >
+        <img
+          id="load"
+          style="margin: 0px auto;"
+          src="https://cdn.dribbble.com/users/411641/screenshots/5473987/2018-10-30_214814.gif"
+        />
+      </div>
+    </center>
+
+    <!-- Start: Navigation with Button -->
+    <nav
+      class="navbar navbar-light navbar-expand-md navigation-clean-button"
+      style="background-color: #1e1e30;"
+    >
+      <div class="container">
+        <a
+          class="navbar-brand"
+          href="#"
+          style="
+            color: #007bff;
+            letter-spacing: 1px;
+            font-weight: normal;
+            font-size: 28px;
+          "
+          >BIET Codeground</a
+        ><button
+          data-toggle="collapse"
+          class="navbar-toggler"
+          data-target="#navcol-1"
+        >
+          <span class="sr-only">Toggle navigation</span
+          ><span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+          <ul class="nav navbar-nav mr-auto">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" href="#" style="color: #ff005c;"
+                >About</a
+              >
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="#" style="color: #00ff85;"
+                >Contact Us</a
+              >
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="dropdown-toggle nav-link"
+                data-toggle="dropdown"
+                aria-expanded="false"
+                href="#"
+                style="color: #ffc700;"
+                >Challenges&nbsp;</a
+              >
+              <div class="dropdown-menu" role="menu">
+                <a class="dropdown-item" role="presentation" href="#"
+                  >First Item</a
+                ><a class="dropdown-item" role="presentation" href="#"
+                  >Second Item</a
+                ><a class="dropdown-item" role="presentation" href="#"
+                  >Third Item</a
+                >
+              </div>
+            </li>
+          </ul>
+          <span class="navbar-text actions">
+            <a class="login" href="#" style="color: #999;">Log In</a
+            ><a
+              class="btn btn-light action-button"
+              role="button"
+              href="#"
+              style="background-color: #007bff;"
+              >Sign Up</a
+            ></span
+          >
+        </div>
+      </div>
+    </nav>
+    <!-- End: Navigation with Button -->
+    <!-- Start: 1 Row 2 Columns -->
+    <div style="width: 100%;">
+      <div class="container">
+        <div
+          class="row"
+          style="
+            margin-top: 25px;
+            width: 100%;
+
+            margin-bottom: 25px;
+          "
+        >
+          <div
+            class="col-3 col-md-6 order-1"
+            data-aos="fade-down"
+            data-aos-once="true"
+            style="
+              background-color: #1e1e30; /*border: none;*/ /*border-right: 2px solid #999;*/
+              border-radius: 10px;
+              margin-right: 20px;
+              width: 30%;
+              max-width: 30%;
+
+              min-height: -3px;
+              box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+            "
+          >
+            <div class="card" style="border: none; overflow: scroll;">
+              <div class="card-body" style="background-color: #1e1e30;">
+                <h4
+                  class="card-title"
+                  style="
+                    margin: 0px;
+                    font-size: 22px;
+                    font-weight: 400;
+                    padding-bottom: 5px;
+                  "
+                >
+                  Problem Statement
+                </h4>
+                <p
+                  class="card-text"
+                  style="
+                    color: #ddd;
+                    font-family: 'IBM Plex Sans Condensed', sans-serif;
+                    font-weight: 300;
+                    font-size: 16px;
+                  "
+                >
+
+
+                <%= data_sent_json.question_no %>. 
+                <%= data_sent_json.question_content %>
+                <br>
+                <strong><b>Level :</b> </strong><%= data_sent_json.level %>
+                <br>
+                <strong><b>Example:</b></strong>
+                <br>
+                <strong><b>Sample Input:</b></strong>
+                <br>
+                <%= data_sent_json.testcase3 %>
+                <br>
+                <strong><b>Sapmle Output:</b></strong>
+                <br>
+                <%= data_sent_json.testcase3ans %>
+                <br>
+                <strong><b>Explanation</b></strong>
+                <br>
+
+                
+                <p id="data_recieved" hidden>
+                  <%= data_sent %>
+                </p>
+                </p>
+                <button
+                  id="here"
+                  onclick="clicks()"
+                  class="btn btn-primary"
+                  type="button"
+                >
+                  Compile
+                </button>
+              </div>
+              <div class="card-body" style="background-color: #1e1e30;">
+                <h4
+                  class="card-title"
+                  style="
+                    margin: 0px;
+                    font-size: 22px;
+                    font-weight: 400;
+                    padding-bottom: 5px;
+                    color: rgb(0, 255, 133);
+                  "
+                >
+                  <p id="testcase_head" style="display: none;">Test cases</p>
+                </h4>
+                <ul class="list-group">
+                  <li
+                    id="dt1"
+                    class="list-group-item"
+                    style="
+                      color: #00ff19;
+                      background-color: rgba(0, 255, 25, 0.25);
+                      margin: 10px 5px;
+                      border-radius: 5px;
+                      visibility: collapse;
+                    "
+                  >
+                    <p
+                      style="
+                        font-family: Poppins, sans-serif;
+                        font-weight: 400;
+                      "
+                    >
+                      Test case 1 passed
+                    </p>
+                  </li>
+
+                  <li
+                    id="dtf1"
+                    class="list-group-item"
+                    style="
+                      color: #ff0007;
+                      background-color: #571724;
+                      margin: 10px 5px;
+                      border-radius: 5px;
+                      visibility: collapse;
+                    "
+                  >
+                    <p
+                      id="t1"
+                      style="
+                        font-family: Poppins, sans-serif;
+                        font-weight: 400;
+                      "
+                    >
+                      Test case 1 Failed
+                    </p>
+                  </li>
+
+                  <li
+                    id="dt2"
+                    class="list-group-item"
+                    style="
+                      color: #00ff19;
+                      background-color: rgba(0, 255, 25, 0.25);
+                      margin: 10px 5px;
+                      border-radius: 5px;
+                      visibility: collapse;
+                    "
+                  >
+                    <p
+                      style="
+                        font-family: Poppins, sans-serif;
+                        font-weight: 400;
+                      "
+                    >
+                      Test case 2 passed
+                    </p>
+                  </li>
+                  <li
+                    id="dtf2"
+                    class="list-group-item"
+                    style="
+                      color: #ff0007;
+                      background-color: #571724;
+                      margin: 10px 5px;
+                      border-radius: 5px;
+                      visibility: collapse;
+                    "
+                  >
+                    <p
+                      style="
+                        font-family: Poppins, sans-serif;
+                        font-weight: 400;
+                      "
+                    >
+                      Test case 2 Failed
+                    </p>
+                  </li>
+
+                  <li
+                    id="dt3"
+                    class="list-group-item"
+                    style="
+                      color: #00ff19;
+                      background-color: rgba(0, 255, 25, 0.25);
+                      margin: 10px 5px;
+                      border-radius: 5px;
+                      visibility: collapse;
+                    "
+                  >
+                    <p
+                      style="
+                        font-family: Poppins, sans-serif;
+                        font-weight: 400;
+                      "
+                    >
+                      Test case 3 passed
+                    </p>
+                  </li>
+                  <li
+                    id="dtf3"
+                    class="list-group-item"
+                    style="
+                      color: #ff0007;
+                      background-color: #571724;
+                      margin: 10px 5px;
+                      border-radius: 5px;
+                      visibility: collapse;
+                    "
+                  >
+                    <p
+                      style="
+                        font-family: Poppins, sans-serif;
+                        font-weight: 400;
+                      "
+                    >
+                      Test case 3 Failed
+                    </p>
+                  </li>
+                </ul>
+              </div>
+              <div
+                id="output_div"
+                class="card-body"
+                style="background-color: #1e1e30; visibility: collapse;"
+              >
+                <h4
+                  class="card-title"
+                  style="
+                    margin: 0px;
+                    font-size: 22px;
+                    font-weight: 400;
+                    padding-bottom: 5px;
+                    color: rgb(250, 255, 0);
+                  "
+                >
+                  Output for Sample Test case:
+                </h4>
+                <ul
+                  style="
+                    color: #ffd600;
+                    font-family: Poppins, sans-serif;
+                    padding: 10px 40px;
+                    background-color: rgba(255, 214, 0, 0.33);
+                    font-weight: 400;
+                    border-radius: 10px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                  "
+                >
+                  <li>
+                    Sample Input:
+                    <p id="sample_ipp"></p>
+                  </li>
+                  <li>
+                    Sample Output:
+                    <p id="sample_op"></p>
+                  </li>
+                  <li>
+                    Your Output:
+                    <p id="user_out"></p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="col order-2"
+            data-aos="fade-down"
+            data-aos-once="true"
+            id="editor"
+            style="
+              background-color: #1e1e30;
+              margin-left: 10px;
+              box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+              border-radius: 10px;
+            "
+          >
+            <script
+              src="https://pagecdn.io/lib/ace/1.4.12/ace.js"
+              crossorigin="anonymous"
+              integrity="sha256-Q9hnBpgBFstzZOr+OKFOWZWfcF5nFXO8Qz48Nmndo6U="
+            ></script>
+            <script
+              src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js"
+              crossorigin="anonymous"
+              integrity="sha256-T5QdmsCQO5z8tBAXMrCZ4f3RX8wVdiA0Fu17FGnU1vU="
+            ></script>
+            <script
+              src="https://pagecdn.io/lib/ace/1.4.12/worker-xquery.min.js"
+              crossorigin="anonymous"
+            ></script>
+
+            <script
+              src="https://pagecdn.io/lib/ace/1.4.12/snippets/c_cpp.js"
+              crossorigin="anonymous"
+            ></script>
+            <script
+              src="https://pagecdn.io/lib/ace/1.4.12/theme-nord_dark.js"
+              crossorigin="anonymous"
+            ></script>
+            //Write your code here
+          </div>
+          <script type="text/javascript">
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/nord_dark");
+            editor.session.setMode("ace/mode/c_cpp");
+          </script>
+        </div>
+      </div>
+    </div>
+    <!-- End: 1 Row 2 Columns -->
+    <!-- Start: 1 Row 1 Column -->
+    <div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <p
+              class="text-center"
+              style="
+                color: #7474b5;
+                font-family: 'IBM Plex Sans Condensed', sans-serif;
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-size: 14px;
+              "
+            >
+              Copyright 2020 | All Rights Reserved
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End: 1 Row 1 Column -->
+    <!-- Start: 1 Row 2 Columns -->
+    <div></div>
+    <!-- End: 1 Row 2 Columns -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+    <script src="script.min.js"></script>
+  </body>
+</html>

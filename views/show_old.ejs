@@ -1,0 +1,159 @@
+<html>
+  <head>
+    <style type="text/css" media="screen">
+      #editor {
+        position: absolute;
+        top: 105;
+        right: 10;
+        bottom: 0;
+        left: 450;
+        background-color: #1e1e30;
+        border-radius: 10px 0 0 10px;
+        font-size: 15px;
+        overflow: scroll;
+      }
+    </style>
+
+    <script>
+      function clicks() {
+        var codes = editor.getValue();
+        var url = "http://localhost:3000";
+        // create a JSON object
+        const json = {
+          code: codes,
+        };
+
+        // request options
+        const options = {
+          method: "POST",
+          body: JSON.stringify(json),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        // send post request
+        fetch("/", options)
+          .then((res) => res.json())
+          .then((res) => {
+            document.getElementById("out").innerHTML = res.stdout;
+            alert(" Volaaa!!!! It is compiled");
+            if (res.stdout == "Hello World!!") {
+              document.getElementById("testcase").innerHTML =
+                "Test Case Passed";
+              document.getElementById("testcase").style.color = "#28a745;";
+            } else {
+              document.getElementById("testcase").innerHTML =
+                "Test Case Failed";
+              document.getElementById("testcase").style.color = "#ff073a;";
+            }
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <div
+      id="outer"
+      style="height: 100vh; width: 100vw; background-color: #161625;"
+    >
+      <div
+        id="header"
+        style="height: 10vh; width: 100vw; background-color: #1e1e30;"
+      >
+        <center>
+          <h1
+            style="
+              color: #ff073a;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              line-height: 10vh;
+            "
+          >
+            BIET Coders &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+            <input type="button" value="Click me to run" onclick="clicks()" />
+          </h1>
+        </center>
+      </div>
+      <div id="main">
+        <br />
+        <div
+          id="left"
+          style="
+            height: 90vh;
+            width: 30vw;
+            background-color: #1e1e30;
+            border-radius: 0 10px 10px 0;
+            color: #9ea4a9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-left: 5px;
+          "
+        >
+          <br />
+          <center><h3>Program : Trial Run</h3></center>
+          <hr />
+          <h4>Q1. Write a program that prints "Hello World!"</h4>
+
+          <hr />
+          <center>
+            <h4>
+              Expected Output:
+            </h4>
+            <h4 style="color: #007bff;">
+              Hello World!!
+            </h4>
+            <br />
+            <h4>
+              Your Output:
+            </h4>
+            <h4 style="color: #28a745;">
+              <p id="out">---------</p>
+            </h4>
+
+            <br />
+
+            <h4>
+              Testcase Result:
+            </h4>
+            <h4 id="testcase" style="color: #28a745;">
+              ---------
+            </h4>
+          </center>
+        </div>
+        <div id="right" style="height: 90vh; width: 70vw;">
+          <div id="editor">
+            // Write your code here
+          </div>
+          <script
+            src="https://pagecdn.io/lib/ace/1.4.12/ace.js"
+            crossorigin="anonymous"
+            integrity="sha256-Q9hnBpgBFstzZOr+OKFOWZWfcF5nFXO8Qz48Nmndo6U="
+          ></script>
+          <script
+            src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js"
+            crossorigin="anonymous"
+            integrity="sha256-T5QdmsCQO5z8tBAXMrCZ4f3RX8wVdiA0Fu17FGnU1vU="
+          ></script>
+          <script
+            src="https://pagecdn.io/lib/ace/1.4.12/worker-xquery.min.js"
+            crossorigin="anonymous"
+          ></script>
+
+          <script
+            src="https://pagecdn.io/lib/ace/1.4.12/snippets/c_cpp.js"
+            crossorigin="anonymous"
+          ></script>
+          <script
+            src="https://pagecdn.io/lib/ace/1.4.12/theme-nord_dark.js"
+            crossorigin="anonymous"
+          ></script>
+          <script>
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/nord_dark");
+            editor.session.setMode("ace/mode/c_cpp");
+          </script>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
